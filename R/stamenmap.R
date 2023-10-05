@@ -5,7 +5,7 @@
 #' @param maptype The map type that stamen supported.
 #' @param zoom The zoom parameter is an integer between 0 (zoomed out) and 18 (zoomed in). 18 is normally the maximum.
 #' @returns An image of stamen map type.
-#' @examples 
+#' @examples
 #' generateStamenMap("ryd linkoping", "watercolor", 15)
 #' @import httr
 #' @import ggplot2
@@ -32,7 +32,7 @@ generateStamenMap <- function(address, maptype, zoom) {
   }
 
   # Geocode the address using the opencage package
-  geo_data <- tryCatch(
+  tryCatch(
     {
       result_df <- oc_forward_df(address)
       lat = result_df$oc_lat
