@@ -4,23 +4,31 @@ ui<-fluidPage(
   titlePanel("Stem Map"),
   sidebarLayout(
 
-    # Sidebar panel for inputs ----
+
     sidebarPanel(
 
-      # Input: Slider for the number of bins ----
+      helpText("This is the app that can be visualize the map data what you searched location in the world."),
+
+      selectInput("var",
+                  label = "Choose a map type",
+                  choices = list("Water Colour",
+                                 "Tonner",
+                                 "Terrain"),
+                  selected = "Tonner"),
+      textInput("var2",
+                label = "Tyepe your city and country"
+                ),
       sliderInput(inputId = "bins",
-                  label = "Number of bins:",
-                  min = 1,
-                  max = 50,
-                  value = 30)
+                    label = "Zooming range:",
+                    min = 1,
+                    max = 100,
+                    value = 15)
 
     ),
 
     # Main panel for displaying outputs ----
     mainPanel(
-
-      # Output: Histogram ----
-      plotOutput(outputId = "distPlot")
+      generateStamenMap("ryd linkoping", "watercolor", 15)
 
     )
   )
@@ -53,3 +61,4 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 
 runApp("userinterface")
+
