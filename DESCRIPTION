@@ -1,0 +1,19 @@
+Package: stamenmap
+Type: Package
+Title: This package will create a stamen map with an given address
+Version: 1.0
+Date: 2023-10-02
+Authors@R: c(person("Xuan", "Developer", role = c("aut", "cre"),
+                     email = "xuawa284@student.liu.se"),
+              person("Ashen", "Developer", role = "ctb",
+                     email = "thawe276@student.liu.se"))
+Author: Ashen Developer, Xuan Developer
+Maintainer: Ashen Developer <thawe276@student.liu.se>
+Description: This package will create a stamen map with an given address
+License: GPL (>= 2)
+Encoding: UTF-8
+Imports:
+    httr,
+    ggplot2,
+    opencage
+RoxygenNote: 7.2.3

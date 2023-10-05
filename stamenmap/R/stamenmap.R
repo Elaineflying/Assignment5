@@ -1,4 +1,0 @@
-stamenmap <-
-function() {
-    return("stamenmap")
-}
