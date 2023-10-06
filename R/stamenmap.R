@@ -87,8 +87,11 @@ generateStamenMap <- function(address, maptype, zoom) {
   if (httr::status_code(map_image) == 200) {
     #return(map_image)
     writeBin(httr::content(map_image, "raw"), map_image_name, useBytes = TRUE)
-    system2("open", map_image_name)
+    #system2("open", map_image_name)
+    content <- httr::content(map_image, "raw")
+    base64_img <- base64enc::base64encode(content)
   } else {
     stop("Failed to retrieve the map image.")
   }
+  return(img)
 }
