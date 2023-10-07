@@ -1,4 +1,5 @@
 library(shiny)
+library(opencage)
 
 ui<-fluidPage(
   titlePanel("Stamen Map"),
@@ -55,6 +56,10 @@ server <- function(input, output) {
     if ( !(is.numeric(zoom) && length(zoom) == 1 && zoom == round(zoom) && zoom >=0 && zoom <=18) ) {
       stop("The argument zoom should be a positve integer ranging from 0-18")
     }
+
+
+    lng <- -74.006  # Default longitude (New York City)
+    lat <- 40.7128
 
     # Geocode the address using the opencage package
     tryCatch(
