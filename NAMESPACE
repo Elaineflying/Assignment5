@@ -3,4 +3,5 @@
 export(generateStamenMap)
 import(ggplot2)
 import(httr)
+import(magick)
 import(opencage)

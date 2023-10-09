@@ -1,6 +1,6 @@
 Package: stamenmap
 Type: Package
-Title: This package will create a stamen map with an given address
+Title: This package will create a stamen map
 Version: 1.0
 Date: 2023-10-02
 Authors@R: c(person("Xuan", "Developer", role = c("aut", "cre"),
@@ -9,11 +9,21 @@ Authors@R: c(person("Xuan", "Developer", role = c("aut", "cre"),
                      email = "thawe276@student.liu.se"))
 Author: Ashen Developer, Xuan Developer
 Maintainer: Ashen Developer <thawe276@student.liu.se>
-Description: This package will create a stamen map with an given address
+Description: This package will create a stamen map when given an address, stamen map type and zoom range.
 License: GPL (>= 2)
 Encoding: UTF-8
 Imports:
     httr,
     ggplot2,
+    magick,
     opencage
 RoxygenNote: 7.2.3
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)
+LazyData: true

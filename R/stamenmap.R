@@ -1,19 +1,25 @@
-#' stmenmap is to build a stamenmap.
+#' This function is to create a stamen map image.
 #' @references Reference page link <https://maps.stamen.com/#watercolor/11/40.6575/-73.9685>
-#' @description generateStamenMap is to build a stamen type map with a given address, map type and zoom range.
+#' @description generateStamenMap is to build a stamen map image when given an address, map type and zoom range.
 #' @param address An address, e.g. New York City
 #' @param maptype The map type that stamen supported.
 #' @param zoom The zoom parameter is an integer between 0 (zoomed out) and 18 (zoomed in). 18 is normally the maximum.
-#' @returns An image of stamen map type.
+#' @returns An image of stamen map and geocodes addresses (longitude and latitude)
 #' @examples
-#' generateStamenMap("ryd linkoping", "watercolor", 15)
+#' maps <- generateStamenMap("ryd linkoping", "watercolor", 15)
+#' magick::image_read(maps$map_image)
+#' maps$lat_longs
 #' @import httr
 #' @import ggplot2
+#' @import magick
 #' @import opencage
 #' @export generateStamenMap
+# Define a function to generate a Stamen map image
 generateStamenMap <- function(address, maptype, zoom) {
-  # Replace spaces with "+" in the address for the URL
-  address <- gsub(" ", "+", address)
+  # Checking address argument
+  if ( !is.character(address) ) {
+    stop("The argument address should be a string, please check!")
+  }
 
   maptype_array <- c("terrain","terrain-background","terrain-labels",
                      "terrain-lines", "toner", "toner-background",
@@ -29,6 +35,12 @@ generateStamenMap <- function(address, maptype, zoom) {
   # https://github.com/dkahle/ggmap/blob/master/R/get_stamenmap.R
   if ( !(is.numeric(zoom) && length(zoom) == 1 && zoom == round(zoom) && zoom >=0 && zoom <=18) ) {
     stop("The argument zoom should be a positve integer ranging from 0-18")
+  }
+
+  # Set default opencage API keys for the first time
+  env_vars <- Sys.getenv()
+  if ( !"OPENCAGE_KEY" %in% names(env_vars)) {
+    Sys.setenv("OPENCAGE_KEY" = "d77c46fce55647ec9ca422379173a3ec")
   }
 
   # Geocode the address using the opencage package
@@ -48,15 +60,14 @@ generateStamenMap <- function(address, maptype, zoom) {
   if (is.na(lng) || is.na(lat)) {
     stop("Geocoding failed.")
   }
-
+  # store latitue and longitude into a dataframe for further functions
+  lat_longs <- data.frame(name=paste0(gsub("[,\\.]", "", gsub("\\s+", "_", address))), latitude=lat,longitude=lng)
   # Calculate xtile and ytile
   #https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Coordinates_to_tile_numbers_2
   lat_rad <- lat * pi /180
   n <- 2.0 ^ zoom
   xtile <- floor((lng + 180.0) / 360.0 * n)
   ytile = floor((1.0 - log(tan(lat_rad) + (1 / cos(lat_rad))) / pi) / 2.0 * n)
-  #return( c(xtile, ytile))
-  #return(paste(paste("https://tile.openstreetmap.org", zoom, xtile, ytile, sep="/"),".png",sep=""))
 
   # Construct the base URL for the Stamen Maps API
   # https://docs.stadiamaps.com/guides/migrating-from-stamen-map-tiles/
@@ -80,18 +91,14 @@ generateStamenMap <- function(address, maptype, zoom) {
   )
 
   # Send a GET request to the Stamen Maps API and retrieve the map image
-  map_image <- httr::GET(complete_url)
-  map_image_name <- paste0(gsub("[,\\.]", "", gsub("\\s+", "_", address)),"_", maptype,".png")
+  response <- httr::GET(complete_url)
 
   # Check if the request was successful
-  if (httr::status_code(map_image) == 200) {
-    #return(map_image)
-    writeBin(httr::content(map_image, "raw"), map_image_name, useBytes = TRUE)
-    #system2("open", map_image_name)
-    content <- httr::content(map_image, "raw")
-    base64_img <- base64enc::base64encode(content)
+  if (httr::status_code(response) == 200) {
+    # Read the downloaded image
+    map_content <- httr::content(response, "raw")
   } else {
     stop("Failed to retrieve the map image.")
   }
-  return(img)
+  return(list(map_image = map_content, lat_longs = lat_longs))
 }

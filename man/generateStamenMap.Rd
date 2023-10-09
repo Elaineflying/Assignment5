@@ -2,7 +2,7 @@
 % Please edit documentation in R/stamenmap.R
 \name{generateStamenMap}
 \alias{generateStamenMap}
-\title{stmenmap is to build a stamenmap.}
+\title{This function is to create a stamen map image.}
 \usage{
 generateStamenMap(address, maptype, zoom)
 }
@@ -14,13 +14,15 @@ generateStamenMap(address, maptype, zoom)
 \item{zoom}{The zoom parameter is an integer between 0 (zoomed out) and 18 (zoomed in). 18 is normally the maximum.}
 }
 \value{
-An image of stamen map type.
+An image of stamen map and geocodes addresses (longitude and latitude)
 }
 \description{
-generateStamenMap is to build a stamen type map with a given address, map type and zoom range.
+generateStamenMap is to build a stamen map image when given an address, map type and zoom range.
 }
 \examples{
-generateStamenMap("ryd linkoping", "watercolor", 15)
+maps <- generateStamenMap("ryd linkoping", "watercolor", 15)
+magick::image_read(maps$map_image)
+maps$lat_longs
 }
 \references{
 Reference page link <https://maps.stamen.com/#watercolor/11/40.6575/-73.9685>
