@@ -3,7 +3,7 @@ title: "my-vignette"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{my-vignette}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -15,5 +15,21 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
+devtools::install_github("Elaineflying/Assignment5", build_vignettes = TRUE)
 library(stamenmap)
+```
+
+### Create a stamen map object
+```{r}
+maps <- generateStamenMap("ryd linkoping", "watercolor", 15)
+```
+
+### View the stamen map image 
+```{r}
+magick::image_read(maps$map_image)
+```
+
+### Print geocodes of an address 
+```{r}
+maps$lat_longs
 ```
